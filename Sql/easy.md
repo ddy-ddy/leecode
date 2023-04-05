@@ -1,6 +1,6 @@
 ## [第二高的薪水](https://leetcode.cn/problems/second-highest-salary/)
 
-**题目:  **获取并返回 `Employee` 表中第二高的薪水 。如果不存在第二高的薪水，查询应该返回 `null` 
+**题目:** 获取并返回 `Employee` 表中第二高的薪水 。如果不存在第二高的薪水，查询应该返回 `null` 
 
 **解题思路1:** 首先用子查询查出薪水最高的记为a，然后查询比a小的薪水中的最高的即为整个数据第二高的
 
@@ -18,7 +18,7 @@ where
     )
 ```
 
-**解题思路2: **使用**limit**和**offset**语句以及**ifnull**函数。降序排列再返回第二条数据。
+**解题思路2:** 使用**limit**和**offset**语句以及**ifnull**函数。降序排列再返回第二条数据。
 
 - `limit n`表示查询结果返回前n条数据
 - `offset n`表示跳过n条数据
@@ -106,6 +106,62 @@ RETURN (
         rnk = N
 );
 END
+```
+
+
+
+## [连续出现的数据](https://leetcode.cn/problems/consecutive-numbers/)
+
+**题目:** 编写一个 SQL 查询，查找所有至少连续出现三次的数字
+
+**解题思路1:** 三表连接，根据ID去判断是否连续
+
+```sql
+select distinct
+    l1.Num as ConsecutiveNums
+from
+    Logs l1,
+    Logs l2,
+    Logs l3
+where
+    l1.ID = l2.ID - 1
+    and l2.ID = l3.ID - 1
+    and l1.Num = l2.Num
+    and l2.Num = l3.Num
+```
+
+**解题思路2:** 如果一个num连续出现时，那么它出现的`真实序列`-`它出现的次数`一定是个定值
+
+```sql
+select
+    distinct Num as ConsecutiveNums
+from
+    (
+        select
+            Num,
+            count(1) as SerialCount
+        from
+            (
+                select
+                    ID,
+                    Num,
+                    row_number() over(
+                        order by
+                            Id
+                    ) - row_number() over(
+                        partition by Num
+                        order by
+                            Id
+                    ) as SerialNumberSubGroup -- 两列相减为0则表示是连续的
+                from
+                    Logs
+            ) as Sub
+        group by
+            Num,
+            SerialNumberSubGroup
+        having
+            count(1) >= 3  -- 取连续3次的，如果是连续n次就把3改成n
+    ) as reuslt
 ```
 
 
