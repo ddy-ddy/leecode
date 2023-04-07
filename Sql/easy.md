@@ -166,7 +166,22 @@ from
 
 
 
+## [超过经理收入的员工](https://leetcode.cn/problems/employees-earning-more-than-their-managers/description/)
 
+**题目:** 编写一个SQL查询来查找收入比经理高的员工。以任意顺序返回结果表。
+
+**解题思路1:** 多表查询，采用自连接的方式，一张表当两张表用
+
+```sql
+select
+    e1.name as Employee
+from
+    Employee e1,
+    Employee e2
+where
+    e1.managerId = e2.id
+    and e1.salary > e2.salary
+```
 
 
 
