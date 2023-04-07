@@ -185,3 +185,22 @@ where
 
 
 
+## [查找重复的电子邮箱](https://leetcode.cn/problems/duplicate-emails/description/)
+
+**题目:** 编写一个 SQL 查询来报告所有重复的电子邮件。 请注意，可以保证电子邮件字段不为 NULL
+
+**解题思路1:** 使用group by和having条件。通过group by对email分组，再使用having将重复的email筛选出来
+
+- 注意优先级`where > group by > having > order by`
+
+```sql
+select
+    email as email
+from
+    Person
+group by
+    email
+having
+    count(email) > 1
+```
+

@@ -1,16 +1,8 @@
-with manager as(
-    select
-        id name,
-        salary
-    from
-        Employee
-    where
-        managerId is null
-)
 select
-    name
+    email as email
 from
-    Employee e
-    left join manager m on e.managerId = m.id
-where
-    e.salary > m.salary
+    Person
+group by
+    email
+having
+    count(email) > 1
