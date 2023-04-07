@@ -204,3 +204,21 @@ having
     count(email) > 1
 ```
 
+
+
+## [从不定购的客户](https://leetcode.cn/problems/customers-who-never-order/description/)
+
+**题目:** 某网站包含两个表，`Customers` 表和 `Orders` 表。编写一个 SQL 查询，找出所有从不订购任何东西的客户
+
+**解题思路1:** 使用左连接，然后用id为null去判断
+
+```sql
+select
+    c.Name as Customers
+from
+    Customers c
+    left join Orders o on c.Id = o.CustomerId
+where
+    o.id is null
+```
+
