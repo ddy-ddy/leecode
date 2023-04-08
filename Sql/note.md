@@ -222,3 +222,49 @@ where
     o.id is null
 ```
 
+
+
+## [部门工资最高的员工](https://leetcode.cn/problems/department-highest-salary/description/)
+
+**题目:** 编写SQL查询以查找每个部门中薪资最高的员工。
+
+**解题思路1:** 使用rank()窗口函数根据分组去给每个数据排名，然后选取排名为1的数据
+
+```sql
+select
+    Department,
+    Employee,
+    Salary
+from
+    (
+        select
+            d.Name as Department,
+            e.Name as Employee,
+            e.Salary,
+            rank() over (
+                partition by d.Name
+                order by
+                    e.salary desc
+            ) as rnk
+        from
+            Department d
+            join Employee e on d.id = e.DepartmentId
+    ) a
+where
+    a.rnk = 1
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
