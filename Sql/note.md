@@ -256,6 +256,23 @@ where
 
 
 
+## [上升的问题](https://leetcode.cn/problems/rising-temperature/description/)
+
+**题目:** 编写一个 SQL 查询，来查找与之前（昨天的）日期相比温度更高的所有日期的 `id` 。
+
+**解题思路1:** 用`datediff`函数来判断两个日期是否相隔1天
+
+```sql
+select
+    w2.id as id
+from
+    Weather w1,
+    Weather w2
+where
+     w1.Temperature < w2.Temperature
+     and datediff(w2.recordDate, w1.recordDate) = 1
+```
+
 
 
 
