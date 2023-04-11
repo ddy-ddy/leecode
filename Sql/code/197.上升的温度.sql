@@ -10,9 +10,11 @@
 select
     w2.id as id
 from
-    Weather w1
-    left join Weather w2 on w1.Temperature < w2.Temperature
-        and datediff(w2.recordDate, w1.recordDate) = 1
+    Weather w1,
+    Weather w2
+where
+    w1.Temperature < w2.Temperature
+    and datediff(w2.recordDate, w1.recordDate) = 1
 
 -- @lc code=end
 
