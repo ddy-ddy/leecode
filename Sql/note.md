@@ -308,7 +308,39 @@ group by
 
 
 
+## [游戏玩法分析](https://leetcode.cn/problems/game-play-analysis-iv/)
 
+**题目:** 编写一个 SQL 查询，报告在首次登录的第二天再次登录的玩家的比率，四舍五入到小数点后两位。换句话说，您需要计算从首次登录日期开始至少连续两天登录的玩家的数量，然后除以玩家总数。
+
+解题思路1: 首先在子查询中找到第二天登录的用户，然后再到外面一层进行筛选和计算
+
+```sql
+select
+    ifnull(
+        round(
+            count(distinct player_id) / (
+                select
+                    count(distinct player_id)
+                from
+                    Activity
+            ),
+            2
+        ),
+        0
+    ) as fraction
+from
+    Activity
+where
+    (player_id, event_date) in (
+        select
+            player_id,
+            date(min(event_date) + 1)
+        from
+            Activity
+        group by
+            player_id
+    )
+```
 
 
 
