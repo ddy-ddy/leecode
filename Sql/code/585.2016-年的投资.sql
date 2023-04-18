@@ -5,37 +5,20 @@
 --
 -- @lc code=start
 # Write your MySQL query statement below
-with location_info as (
+with temp as (
     select
-        LAT,
-        LON
+        *,
+        count(PID) over(partition by TIV_2015) as rank1,
+        count(PID) over(partition by concat(LAT,LON)) as rank2
     from
         insurance
-    group by
-        LAT,
-        LON
-    having
-        count(*) = 1
-),
-tiv_info as (
-    select
-        TIV_2015
-    from
-        insurance
-    group by
-        TIV_2015
-    having
-        count(*) > 1
 )
 select
-    round(sum(i.TIV_2016), 2) as tiv_2016
+    round(sum(TIV_2016),2) as TIV_2016
 from
-    insurance i
-    left join location_info on i.LAT = location_info.LAT
-    and i.LON = location_info.LON
-    left join tiv_info on i.TIV_2015 = tiv_info.TIV_2015
+    temp
 where
-    location_info.LAT is not null
-    and location_info.LON is not null
-    and tiv_info.TIV_2015 is not null
+    rank1 > 1 and rank2 = 1
+
+
  -- @lc code=end

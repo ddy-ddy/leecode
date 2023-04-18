@@ -344,5 +344,91 @@ where
 
 
 
+## [2016年的投资](https://leetcode.cn/problems/investments-in-2016/description/)
+
+**题目:** 写一个查询语句，将 2016 年 (TIV_2016) 所有成功投资的金额加起来，保留 2 位小数。
+
+对于一个投保人，他在 2016 年成功投资的条件是：
+
+- 他在 2015 年的投保额 (TIV_2015) 至少跟一个其他投保人在 2015 年的投保额相同。
+
+- 他所在的城市必须与其他投保人都不同（也就是说维度和经度不能跟其他任何一个投保人完全相同）
+
+**解题思路1:** 用临时表，这个方法过程很清晰
+
+```sql
+with location_info as (
+    select
+        LAT,
+        LON
+    from
+        insurance
+    group by
+        LAT,
+        LON
+    having
+        count(*) = 1
+),
+tiv_info as (
+    select
+        TIV_2015
+    from
+        insurance
+    group by
+        TIV_2015
+    having
+        count(*) > 1
+)
+select
+    round(sum(i.TIV_2016), 2) as tiv_2016
+from
+    insurance i
+    left join location_info on i.LAT = location_info.LAT
+    and i.LON = location_info.LON
+    left join tiv_info on i.TIV_2015 = tiv_info.TIV_2015
+where
+    location_info.LAT is not null
+    and location_info.LON is not null
+    and tiv_info.TIV_2015 is not null
+```
+
+**解题思路2:** 用窗口函数去统计数量，并且给排名新增两列，最后在筛选即可
+
+```sql
+with location_info as (
+    select
+        LAT,
+        LON
+    from
+        insurance
+    group by
+        LAT,
+        LON
+    having
+        count(*) = 1
+),
+tiv_info as (
+    select
+        TIV_2015
+    from
+        insurance
+    group by
+        TIV_2015
+    having
+        count(*) > 1
+)
+select
+    round(sum(i.TIV_2016), 2) as tiv_2016
+from
+    insurance i
+    left join location_info on i.LAT = location_info.LAT
+    and i.LON = location_info.LON
+    left join tiv_info on i.TIV_2015 = tiv_info.TIV_2015
+where
+    location_info.LAT is not null
+    and location_info.LON is not null
+    and tiv_info.TIV_2015 is not null
+```
+
 
 
